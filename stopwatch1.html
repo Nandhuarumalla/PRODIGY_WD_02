@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            background-color: #f0f0f0; /* Light gray background */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .stopwatch-container {
+            background-color: #ffffff; /* White background for stopwatch container */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stopwatch {
+            font-size: 3rem;
+            color: #333333; /* Dark text color */
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e0e0e0; /* Light gray background for time display */
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button:nth-child(1) {
+            background-color: #4CAF50; /* Green for Start button */
+            color: white;
+        }
+        button:nth-child(2) {
+            background-color: #f44336; /* Red for Stop button */
+            color: white;
+        }
+        button:nth-child(3) {
+            background-color: #FF9800; /* Orange for Reset button */
+            color: white;
+        }
+        button:nth-child(4) {
+            background-color: #2196F3; /* Blue for Lap button */
+            color: white;
+        }
+        #laps {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.2rem;
+            color: #333333;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch-container">
+        <div class="stopwatch" id="stopwatch">00:00:00</div>
+        <button onclick="startStopwatch()">Start</button>
+        <button onclick="stopStopwatch()">Stop</button>
+        <button onclick="resetStopwatch()">Reset</button>
+        <button onclick="lapTime()">Lap</button>
+        <div id="laps"></div>
+    </div>
+
+    <script>
+        let stopwatchInterval;
+        let startTime;
+        let elapsedTime = 0;
+        let isRunning = false;
+
+        function pad(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+        function updateTime() {
+            const time = Date.now() - startTime + elapsedTime;
+            const hours = Math.floor(time / 3600000);
+            const minutes = Math.floor((time % 3600000) / 60000);
+            const seconds = Math.floor((time % 60000) / 1000);
+
+            document.getElementById('stopwatch').innerHTML = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+        }
+
+        function startStopwatch() {
+            if (!isRunning) {
+                startTime = Date.now();
+                stopwatchInterval = setInterval(updateTime, 1000);
+                isRunning = true;
+            }
+        }
+
+        function stopStopwatch() {
+            if (isRunning) {
+                clearInterval(stopwatchInterval);
+                elapsedTime += Date.now() - startTime;
+                isRunning = false;
+            }
+        }
+
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            elapsedTime = 0;
+            isRunning = false;
+            document.getElementById('stopwatch').innerHTML = "00:00:00";
+            document.getElementById('laps').innerHTML = '';
+        }
+
+        function lapTime() {
+            const lapTime = document.getElementById('stopwatch').innerHTML;
+            const lapDiv = document.getElementById('laps');
+            const lapElement = document.createElement('div');
+            lapElement.textContent = 'Lap: ' + lapTime;
+            lapDiv.appendChild(lapElement);
+        }
+    </script>
+</body>
+</html>
+    
